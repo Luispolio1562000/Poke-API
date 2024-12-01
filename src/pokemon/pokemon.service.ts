@@ -10,15 +10,21 @@ import { isValidObjectId, Model } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { log } from 'console';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
+  private defaultLimit: number;
   constructor(
     //*  Para injectar el model de Mongoose, se utiliza lo siguiente, utilizando el decorador Inject de Mongoose.
 
     @InjectModel(Pokemon.name)
     private readonly pokemonModel: Model<Pokemon>,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.defaultLimit = this.configService.get('defaultLimit');
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLowerCase();
@@ -31,8 +37,19 @@ export class PokemonService {
     }
   }
 
-  findAll() {
-    return `This action returns all pokemon`;
+  findAll(paginationDto: PaginationDto) {
+    const { limit = this.defaultLimit, offset = 0 } = paginationDto;
+
+    const response = this.pokemonModel
+      .find()
+      .limit(limit)
+      .skip(offset)
+      .sort({ no: 1 })
+      .select('-__v')
+      .exec();
+    const total = limit;
+
+    return response;
   }
 
   async findOne(id: string) {
@@ -79,11 +96,11 @@ export class PokemonService {
 
     return `Pokemon ${pokemon.name} has been removed` */
 
-    const {deletedCount} = await this.pokemonModel.deleteOne({ _id: id });
+    const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
     if (deletedCount === 0) {
       throw new BadRequestException(`Pokemon with ${id} not found`);
     }
-  return 
+    return;
   }
 
   private handleExeptions(error: any) {

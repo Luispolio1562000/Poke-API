@@ -5,5 +5,5 @@ export declare class SeedService {
     private readonly pokemonModel;
     private readonly http;
     constructor(pokemonModel: Model<Pokemon>, http: AxiosAdapter);
-    executeSeed(): Promise<void>;
+    executeSeed(): Promise<string>;
 }

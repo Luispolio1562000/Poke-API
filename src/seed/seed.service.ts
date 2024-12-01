@@ -45,5 +45,6 @@ export class SeedService {
     });
 
     await this.pokemonModel.insertMany(pokemonToInsert);
+    return 'Seed executed successfully';
   }
 }

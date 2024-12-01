@@ -32,6 +32,7 @@ let SeedService = class SeedService {
             pokemonToInsert.push({ name, no });
         });
         await this.pokemonModel.insertMany(pokemonToInsert);
+        return 'Seed executed successfully';
     }
 };
 exports.SeedService = SeedService;

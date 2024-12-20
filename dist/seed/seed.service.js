@@ -24,7 +24,7 @@ let SeedService = class SeedService {
         this.http = http;
     }
     async executeSeed() {
-        const data = await this.http.get('https://pokeapi.co/api/v2/pokemon?limit=200');
+        const data = await this.http.get('https://pokeapi.co/api/v2/pokemon?limit=50');
         const pokemonToInsert = [];
         data.results.forEach(({ name, url }) => {
             const segments = url.split('/');
